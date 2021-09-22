@@ -106,7 +106,6 @@ namespace wpfRabbitMQ.Postgres
 
         private void btnCriaUser_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
                 using (var ctx = new Context())
