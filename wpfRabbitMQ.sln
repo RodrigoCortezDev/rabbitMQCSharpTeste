@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wpfRabbitMQ.Postgres", "wpfRabbitMQ\wpfRabbitMQ.Postgres.csproj", "{48FAF00C-187D-4B82-99D9-9406C73F8EFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wpfRabbitMQ.Mongo", "wpfRabbitMQ.Mongo\wpfRabbitMQ.Mongo.csproj", "{96F1F929-AFC3-4785-A177-79076A8631A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BECEA036-8267-49F9-817C-C0D751A291C6}"
+	ProjectSection(SolutionItems) = preProject
+		Comandos.txt = Comandos.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48FAF00C-187D-4B82-99D9-9406C73F8EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48FAF00C-187D-4B82-99D9-9406C73F8EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48FAF00C-187D-4B82-99D9-9406C73F8EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48FAF00C-187D-4B82-99D9-9406C73F8EFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96F1F929-AFC3-4785-A177-79076A8631A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96F1F929-AFC3-4785-A177-79076A8631A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96F1F929-AFC3-4785-A177-79076A8631A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96F1F929-AFC3-4785-A177-79076A8631A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {289189A8-F832-44E7-828A-80BC5BA3D638}
+	EndGlobalSection
+EndGlobal
