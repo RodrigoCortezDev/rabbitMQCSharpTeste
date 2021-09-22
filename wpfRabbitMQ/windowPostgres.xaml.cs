@@ -106,6 +106,7 @@ namespace wpfRabbitMQ.Postgres
 
         private void btnCriaUser_Click(object sender, RoutedEventArgs e)
         {
+            //Salvando novo user e criando fila
             try
             {
                 using (var ctx = new Context())
