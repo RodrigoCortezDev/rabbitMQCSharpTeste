@@ -59,11 +59,19 @@ namespace wpfRabbitMQ.Postgres
                         var consumer = new EventingBasicConsumer(channel);
                         consumer.Received += (model, ea) =>
                         {
+                            //ea.BasicProperties.ReplyTo
+                            //ea.BasicProperties.CorrelationId
+
                             try
                             {
                                 var body = ea.Body.ToArray();
                                 var message = Encoding.UTF8.GetString(body);
                                 channel.BasicAck(ea.DeliveryTag, false);
+
+                                //var basic = channel.CreateBasicProperties();
+                                //basic.CorrelationId = ea.BasicProperties.CorrelationId;
+
+                                //channel.BasicPublish(exchange: string.Empty, routingKey: ea.BasicProperties.ReplyTo, basicProperties: basic, body: body, mandatory: false);
                             }
                             catch
                             {
@@ -72,6 +80,7 @@ namespace wpfRabbitMQ.Postgres
                         };
 
                         channel.BasicConsume(queue: queueConsumerName, autoAck: false, consumer: consumer);
+                        
 
                         while (true)
                         { Thread.Sleep(1000); }
