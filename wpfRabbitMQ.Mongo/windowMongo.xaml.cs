@@ -16,8 +16,11 @@ namespace wpfRabbitMQ.Mongo
     {
         const string queueGeradorName = "MongoToPostgres";
         const string queueConsumerName = "PostgresToMongo";
-
+        private EventingBasicConsumer consumer;
         private ConnectionFactory connectionFactory;
+        private IConnection conection;
+        private IModel channel;
+
 
 
         public windowMongo()
@@ -37,47 +40,29 @@ namespace wpfRabbitMQ.Mongo
 
 
             //Cria a fila
-            using (var conection = connectionFactory.CreateConnection())
-            using (var channel = conection.CreateModel())
-            {
-                channel.QueueDeclare(queue: queueGeradorName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            }
+            conection = connectionFactory.CreateConnection();
+            channel = conection.CreateModel();
+            
+            channel.QueueDeclare(queue: queueGeradorName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            
 
 
             //Cria o worker/Consumidor
-            Task.Run(() =>
+            consumer = new EventingBasicConsumer(channel);
+            consumer.Received += (model, ea) =>
             {
                 try
                 {
-                    using (var conection = connectionFactory.CreateConnection())
-                    using (var channel = conection.CreateModel())
-                    {
-                        //channel.QueueDeclare(queue: queueConsumerName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-
-                        var consumer = new EventingBasicConsumer(channel);
-                        consumer.Received += (model, ea) =>
-                        {
-                            try
-                            {
-                                var body = ea.Body.ToArray();
-                                var objDes = JsonSerializer.Deserialize<tbUserPostgres>(body);
-                                channel.BasicAck(ea.DeliveryTag, false);
-                            }
-                            catch
-                            {
-                                channel.BasicNack(ea.DeliveryTag, false, true);
-                            }
-                        };
-
-                        channel.BasicConsume(queue: queueConsumerName, autoAck: false, consumer: consumer);
-
-                        while (true)
-                        { Thread.Sleep(1000); }
-                    }
+                    var body = ea.Body.ToArray();
+                    var objDes = JsonSerializer.Deserialize<tbUserPostgres>(body);
+                    channel.BasicAck(ea.DeliveryTag, false);
                 }
                 catch
-                { }
-            });
+                {
+                    channel.BasicNack(ea.DeliveryTag, false, true);
+                }
+            };
+            channel.BasicConsume(queue: queueConsumerName, autoAck: false, consumer: consumer);
         }
     }
 }
