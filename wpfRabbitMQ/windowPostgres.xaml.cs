@@ -1,12 +1,8 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using wpfRabbitMQ.Postgres.DB;
 
@@ -44,9 +40,9 @@ namespace wpfRabbitMQ.Postgres
             //Cria a fila
             conection = connectionFactory.CreateConnection();
             channel = conection.CreateModel();
-            
+
             channel.QueueDeclare(queue: queueGeradorName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            
+
 
             // Cria o worker/ Consumidor
             consumer = new EventingBasicConsumer(channel);
@@ -84,10 +80,10 @@ namespace wpfRabbitMQ.Postgres
             {
                 conection = connectionFactory.CreateConnection();
                 channel = conection.CreateModel();
-                
+
                 var objSend = JsonSerializer.SerializeToUtf8Bytes(user);
-                channel.BasicPublish(exchange: "", routingKey: queueGeradorName, basicProperties: null, body: objSend);                    
-                
+                channel.BasicPublish(exchange: "", routingKey: queueGeradorName, basicProperties: null, body: objSend);
+
             }
             catch (Exception ex)
             {
@@ -112,8 +108,8 @@ namespace wpfRabbitMQ.Postgres
                     criaFila(user);
                 }
             }
-            catch 
-            {  }
+            catch
+            { }
         }
     }
 }

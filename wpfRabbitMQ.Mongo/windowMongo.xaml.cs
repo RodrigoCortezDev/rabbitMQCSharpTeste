@@ -1,12 +1,7 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using wpfRabbitMQ.Mongo.DB;
 
@@ -42,9 +37,9 @@ namespace wpfRabbitMQ.Mongo
             //Cria a fila
             conection = connectionFactory.CreateConnection();
             channel = conection.CreateModel();
-            
+
             channel.QueueDeclare(queue: queueGeradorName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            
+
 
 
             //Cria o worker/Consumidor

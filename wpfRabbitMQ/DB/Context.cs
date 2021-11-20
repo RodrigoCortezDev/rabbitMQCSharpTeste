@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Linq;
 
 namespace wpfRabbitMQ.Postgres.DB
 {
@@ -51,7 +47,7 @@ namespace wpfRabbitMQ.Postgres.DB
                               .LogTo(message => Debug.WriteLine("\r\n######################################\r\n" + message), Microsoft.Extensions.Logging.LogLevel.Information);
         }
 
-        
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
