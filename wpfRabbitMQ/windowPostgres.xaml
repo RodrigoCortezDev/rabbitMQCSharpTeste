@@ -8,5 +8,6 @@
         Title="windowPostgres" Height="450" Width="800">
     <Canvas>
         <Button x:Name="btnCriaUser" Content="Criar user" Click="btnCriaUser_Click" Canvas.Left="10" Canvas.Top="10" Height="36" Width="130" />
+        <Button x:Name="btnConsultaCorporate" Content="Consulta corporate" Click="btnConsultaCorporate_Click" Canvas.Left="168" Canvas.Top="118" Height="36" Width="130" />
     </Canvas>
 </Window>
