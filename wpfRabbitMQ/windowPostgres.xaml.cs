@@ -1,13 +1,8 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using wpfRabbitMQ.Postgres.DB;
 using Newtonsoft.Json.Linq;
@@ -20,8 +15,10 @@ namespace wpfRabbitMQ.Postgres
     {
         const string queueGeradorName = "PostgresToMongo";
         const string queueConsumerName = "MongoToPostgres";
-
+        private EventingBasicConsumer consumer;
         private ConnectionFactory connectionFactory;
+        private IConnection conection;
+        private IModel channel;
 
 
 
@@ -44,55 +41,37 @@ namespace wpfRabbitMQ.Postgres
             //};
 
             //Cria a fila
-            //using (var conection = connectionFactory.CreateConnection())
-            //using (var channel = conection.CreateModel())
-            //{
-            //    channel.QueueDeclare(queue: queueGeradorName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            //}
+            conection = connectionFactory.CreateConnection();
+            channel = conection.CreateModel();
+
+            channel.QueueDeclare(queue: queueGeradorName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+
 
             // Cria o worker/ Consumidor
-            //Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        using (var conection = connectionFactory.CreateConnection())
-            //        using (var channel = conection.CreateModel())
-            //        {
-            //            //channel.QueueDeclare(queue: queueConsumerName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            consumer = new EventingBasicConsumer(channel);
+            consumer.Received += (model, ea) =>
+            {
+                //ea.BasicProperties.ReplyTo
+                //ea.BasicProperties.CorrelationId
 
-            //            var consumer = new EventingBasicConsumer(channel);
-            //            consumer.Received += (model, ea) =>
-            //            {
-            //                //ea.BasicProperties.ReplyTo
-            //                //ea.BasicProperties.CorrelationId
+                try
+                {
+                    var body = ea.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
+                    channel.BasicAck(ea.DeliveryTag, false);
 
-            //                try
-            //                {
-            //                    var body = ea.Body.ToArray();
-            //                    var message = Encoding.UTF8.GetString(body);
-            //                    channel.BasicAck(ea.DeliveryTag, false);
+                    //var basic = channel.CreateBasicProperties();
+                    //basic.CorrelationId = ea.BasicProperties.CorrelationId;
 
-            //                    //var basic = channel.CreateBasicProperties();
-            //                    //basic.CorrelationId = ea.BasicProperties.CorrelationId;
+                    //channel.BasicPublish(exchange: string.Empty, routingKey: ea.BasicProperties.ReplyTo, basicProperties: basic, body: body, mandatory: false);
+                }
+                catch
+                {
+                    channel.BasicNack(ea.DeliveryTag, false, true);
+                }
+            };
 
-            //                    //channel.BasicPublish(exchange: string.Empty, routingKey: ea.BasicProperties.ReplyTo, basicProperties: basic, body: body, mandatory: false);
-            //                }
-            //                catch
-            //                {
-            //                    channel.BasicNack(ea.DeliveryTag, false, true);
-            //                }
-            //            };
-
-            //            channel.BasicConsume(queue: queueConsumerName, autoAck: false, consumer: consumer);
-                        
-
-            //            while (true)
-            //            { Thread.Sleep(1000); }
-            //        }
-            //    }
-            //    catch
-            //    { }
-            //});
+            channel.BasicConsume(queue: queueConsumerName, autoAck: false, consumer: consumer);
         }
 
 
@@ -100,19 +79,19 @@ namespace wpfRabbitMQ.Postgres
 
         private void criaFila(tbUser user)
         {
-            //try
-            //{
-            //    using (var conection = connectionFactory.CreateConnection())
-            //    using (var channel = conection.CreateModel())
-            //    {
-            //        var objSend = JsonSerializer.SerializeToUtf8Bytes(user);
-            //        channel.BasicPublish(exchange: string.Empty, routingKey: queueGeradorName, basicProperties: null, body: objSend);                    
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
+            try
+            {
+                conection = connectionFactory.CreateConnection();
+                channel = conection.CreateModel();
+
+                var objSend = JsonSerializer.SerializeToUtf8Bytes(user);
+                channel.BasicPublish(exchange: "", routingKey: queueGeradorName, basicProperties: null, body: objSend);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
@@ -132,8 +111,8 @@ namespace wpfRabbitMQ.Postgres
                     criaFila(user);
                 }
             }
-            catch 
-            {  }
+            catch
+            { }
         }
 
         private void btnConsultaCorporate_Click(object sender, RoutedEventArgs e)
